@@ -14,7 +14,9 @@ var temp_all = document.getElementsByClassName("deg");
 var icon = document.getElementsByClassName("icon_s");
 
 fetch(
-"http://api.ipstack.com/check?access_key=1093d4911c69fc7a8497b7d78fcc1621&format=1")
+// "http://api.ipstack.com/check?access_key=1093d4911c69fc7a8497b7d78fcc1621&format=1"
+"https://api.ipdata.co/?api-key=test"
+)
   .then(response => response.json())
   .then(data => {
     var geo = data["city"];
