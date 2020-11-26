@@ -108,24 +108,24 @@ const setDate = (key, search) => {
 
       switch (i) {
         case 0:
-          temp_all[1].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
-          temp_all[0].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          temp_all[0].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[1].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
           break;
         case 1:
-          temp_all[3].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
-          temp_all[2].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          temp_all[2].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[3].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
           break;
         case 2:
-          temp_all[5].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
-          temp_all[4].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          temp_all[4].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[5].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
           break;
         case 3:
-          temp_all[7].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
-          temp_all[6].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          temp_all[6].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[7].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
           break;
         case 4:
-          temp_all[9].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
-          temp_all[8].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          temp_all[8].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[9].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
           break;
 
         default:
