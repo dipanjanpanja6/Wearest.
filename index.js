@@ -13,119 +13,46 @@ var day = document.getElementsByClassName("day-bar");
 var temp_all = document.getElementsByClassName("deg");
 var icon = document.getElementsByClassName("icon_s");
 
-fetch(
-// "http://api.ipstack.com/check?access_key=1093d4911c69fc7a8497b7d78fcc1621&format=1"
-"https://api.ipdata.co/?api-key=test"
-)
-  .then(response => response.json())
-  .then(data => {
-    var geo = data["city"];
-    console.log(geo);
-    weathercall(geo);
-  });
+(async () => {
+  const location = await (await fetch('https://api.ipdata.co/?api-key=9b8a49e10bc989a900a2d1052999045d9450c3cee479de571ac81d9e')).json()
+  var geo = location["city"];
+  console.log(geo);
+  getGeoData(geo);
+})();
 
-function weathercall(geo) {
-  fetch(
-    "https://api.openweathermap.org/data/2.5/forecast?q=" +
-      geo +
-      "&appid=82eb8bc7304fb87bdbfbae435106fe06&cnt=7&units=metric"
-  )
-    .then(response => response.json())
-    .then(data => {
-      var cur_icon = [];
-      for (var i = 0; i < 7; i++) {
-        cur_icon[i] = data["list"][i]["weather"][0]["icon"];
-      }
-      icon_list(cur_icon);
 
-      var cur_img = data["list"][0]["weather"][0]["icon"];
-      main_img.src = "icon/big/" + cur_img + ".png";
+const getGeoData = (location) => {
+  // console.log(coords.latitude + "," + coords.longitude);
+  fetch(`https://dataservice.accuweather.com/locations/v1/cities/search?apikey=s20F9JLAlVQK9MYn0d0NHOkw7lFlsvOf&q=` + location).then(d => d.json().then(data => {
+    console.log(data);
+    setDate(data[0].Key, location);
 
-      var cur_temp = [];
-      for (var i = 0; i < 7; i++) {
-        cur_temp[i] = Math.floor(data["list"][i]["main"]["temp"]);
-      }
-      getinfo(cur_temp);
+  }))
+};
 
-      var timestamp = [];
-      for (var i = 0; i < 7; i++) {
-        timestamp[i] = data["list"][i]["dt"];
-      }
-      for (var i = 0; i < 6; i++) {
-        day[i].innerText = dayConverter(timestamp[i + 1]);
-      }
-      date.innerText = timeConverter(timestamp[0]);
 
-      var addr_value = data["city"]["name"];
-      var country_value = data["city"]["country"];
-      address(addr_value, country_value);
+// (async () => {
+//   console.log(";;");
+//   if (navigator.geolocation) {
+//     navigator.geolocation.getCurrentPosition(getGeoData);
 
-      var des = [];
-      for (var i = 0; i < 7; i++) {
-        des[i] = data["list"][i]["weather"][0]["main"];
-      }
-      description(des);
-    });
-}
+//   } else {
+//     x.innerHTML = "Geolocation is not supported by this browser.";
+//   }
+// })();
 
-function getinfo(info) {
-  temp.innerText = info[0];
-  for (var i = 0; i < 6; i++) {
-    temp_all[i].innerText = info[i + 1];
-  }
-}
 
-input.addEventListener("keyup", function(event){
-  if(event.keyCode === 13){
+
+input.addEventListener("keyup", function (event) {
+  if (event.keyCode === 13) {
     event.preventDefault();
     button.click();
   }
 })
 
-button.addEventListener("click", function() {
-  fetch(
-    "https://api.openweathermap.org/data/2.5/forecast?q=" +
-      input.value +
-      "&appid=82eb8bc7304fb87bdbfbae435106fe06&cnt=7&units=metric"
-  )
-    .then(response => response.json())
-    .then(data => {
-      var temp_all = [];
-      for (var i = 0; i < 7; i++) {
-        temp_all[i] = Math.floor(data["list"][i]["main"]["temp"]);
-      }
-      console.log(temp_all);
-      getinfo(temp_all);
-
-      var des = [];
-      for (var i = 0; i < 7; i++) {
-        des[i] = data["list"][i]["weather"][0]["main"];
-      }
-      description(des);
-
-      var cur_img = data["list"][0]["weather"][0]["icon"];
-      main_img.src = "icon/big/" + cur_img + ".png";
-
-      var se_icon = [];
-      for (var i = 0; i < 7; i++) {
-        se_icon[i] = data["list"][i]["weather"][0]["icon"];
-      }
-      icon_list(se_icon);
-
-      var timestamp = [];
-      for (var i = 0; i < 7; i++) {
-        timestamp[i] = data["list"][i]["dt"];
-      }
-      for (var i = 0; i < 6; i++) {
-        day[i].innerText = dayConverter(timestamp[i + 1]);
-      }
-      date.innerText = timeConverter(timestamp[0]);
-
-      var addr_value = data["city"]["name"];
-      var country_value = data["city"]["country"];
-      address(addr_value, country_value);
-    })
-    .catch(err => alert("Enter Wrong City Name"));
+button.addEventListener("click", function () {
+  console.log(input.value);
+  getGeoData(input.value);
 });
 
 // http://openweathermap.org/img/w/10n.png
@@ -162,39 +89,61 @@ function timeConverter(UNIX_timestamp) {
   var hour = a.getHours();
   var min = a.getMinutes();
   var sec = a.getSeconds();
-  var time =
-    //   day :day,
-    //   date:date,
-    //   month:month,
-    //   year:year
-
-    day + ", " + date + " " + month + " " + year + " " + hour + ":" + min;
+  var time = day + ", " + date + " " + month + " " + year + " " + hour + ":" + min;
   return time;
 }
 
 function dayConverter(UNIX) {
-  var a = new Date(UNIX * 1000);
+  var a = new Date(UNIX);
   var x = a.toString().split(" ")[0];
   return x;
 }
-function icon_list(ic) {
-  main_icon.src = "icon/" + ic[0] + ".png";
-  for (var i = 0; i < 6; i++) {
-    icon[i].src = "icon/" + ic[i + 1] + ".png";
-  }
-}
 
-function address(a, b) {
-  addr.innerText = a + ", " + b;
-}
-function description(des) {
-  for (var i = 0; i < 6; i++) {
-    x[i].innerHTML = des[i + 1];
-  }
-  desc.innerText = des[0];
-  // x[1].innerHTML = c;
-  // x[2].innerHTML = d;
-  // x[3].innerHTML = e;
-  // x[4].innerHTML = f;
-  // x[5].innerHTML = g;
+
+const setDate = (key, search) => {
+  fetch(`https://dataservice.accuweather.com/forecasts/v1/daily/5day/${key}?apikey=s20F9JLAlVQK9MYn0d0NHOkw7lFlsvOf&metric=true`).then(response => response.json()).then(data => {
+    for (var i = 0; i < 6; i++) {
+      icon[i].src = "icon2/" + data.DailyForecasts[i].Day.Icon + ".svg";
+      x[i].innerHTML = data.DailyForecasts[i].Day.IconPhrase;
+
+      switch (i) {
+        case 0:
+          temp_all[1].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[0].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          break;
+        case 1:
+          temp_all[3].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[2].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          break;
+        case 2:
+          temp_all[5].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[4].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          break;
+        case 3:
+          temp_all[7].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[6].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          break;
+        case 4:
+          temp_all[9].innerText = Math.floor(data.DailyForecasts[i].Temperature.Minimum.Value);
+          temp_all[8].innerText = Math.floor(data.DailyForecasts[i].Temperature.Maximum.Value);
+          break;
+
+        default:
+          break;
+      }
+      day[i].innerText = dayConverter(data.DailyForecasts[i].Date);
+    }
+
+
+  }).catch(r => console.error(r));
+  fetch("https://api.openweathermap.org/data/2.5/forecast?q=" + search +
+    "&appid=82eb8bc7304fb87bdbfbae435106fe06&cnt=7&units=metric"
+  ).then(response => response.json()).then(data => {
+    temp.innerText = Math.floor(data["list"][0]["main"]["temp"]);
+    desc.innerText = data["list"][0]["weather"][0]["main"];
+    main_img.src = "icon/big/" + data["list"][0]["weather"][0]["icon"] + ".png";
+    main_icon.src = "icon/" + data["list"][0]["weather"][0]["icon"] + ".png";
+    addr.innerText = data["city"]["name"] + ", " + data["city"]["country"];
+    date.innerText = timeConverter(data["list"][0]["dt"])
+  }).catch(r => console.error(r));
 }
